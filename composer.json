@@ -1,0 +1,21 @@
+{
+    "name": "iamntz/logger.wp",
+    "description": "Logging utility for WordPress",
+    "type": "library",
+    "require": {
+        "katzgrau/klogger": "*"
+    },
+    "minimum-stability": "dev",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ionut Staicu",
+            "email": "github@iamntz.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "iamntz\\loggerWP\\": "src"
+        }
+    }
+}
