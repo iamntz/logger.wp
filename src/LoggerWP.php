@@ -63,7 +63,6 @@ $this->log->debug('Message', []);
 	public function getErrors($limit = 10, $level = null)
 	{
 		$this->maybeCreateDirStucture();
-
 		$lines = file($this->getPath($this->getUserLogFileName()));
 		$pattern = "/^\[[\d]{4}-\d{2}-\d{2}\s\d{1,2}:\d{2}:\d{2}\]\s\[(\w+)\]/im";
 
@@ -72,7 +71,7 @@ $this->log->debug('Message', []);
 		$currentLevel = null;
 		$currentIndex = null;
 
-		foreach ($lines as $key => $line) {
+		foreach ((array) $lines as $key => $line) {
 			preg_match($pattern, $line, $matches);
 			$includeError = is_null($level) || $currentLevel === $level;
 
@@ -219,7 +218,9 @@ $this->log->debug('Message', []);
 			$userFile .= '___' . substr(sha1(AUTH_SALT), 1, 10);
 		}
 
-		$userFile = apply_filters( 'iamntz/loggerwp/log-file', "${userFile}.log", $user);
+		$userFile = apply_filters('iamntz/loggerwp/log-file', "${userFile}.log", $user);
+
+		return $userFile;
 	}
 
 	/**
