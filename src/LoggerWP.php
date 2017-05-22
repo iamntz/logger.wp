@@ -1,6 +1,6 @@
 <?php
 
-namespace iamntz;
+namespace iamntz\loggerWP;
 
 use \Katzgrau\KLogger\Logger;
 use \Psr\Log\LogLevel;
