@@ -63,7 +63,7 @@ $this->log->debug('Message', []);
 	public function getErrors($limit = 10, $level = null)
 	{
 		$this->maybeCreateDirStucture();
-		$lines = file($this->getPath($this->getUserLogFileName()));
+		$lines = file($this->getPath($this->_getLogFilename()));
 		$pattern = "/^\[[\d]{4}-\d{2}-\d{2}\s\d{1,2}:\d{2}:\d{2}\]\s\[(\w+)\]/im";
 
 		$errors = [];
@@ -138,10 +138,10 @@ $this->log->debug('Message', []);
 	private function writeError($message, $details = [], $errorLevel)
 	{
 		$this->maybeCreateDirStucture();
-		$fileName = $this->getUserLogFileName();
+		$fileName = $this->_getLogFilename();
 
 		$logger = new Logger($this->getPath(), $errorLevel, [
-			'filename' => $this->getUserLogFileName(),
+			'filename' => $this->_getLogFilename(),
 			'extension' => '',
 			'dateFormat' => 'Y-m-d G:i:s',
 		]);
@@ -168,9 +168,20 @@ $this->log->debug('Message', []);
 	private function getPath($append = '')
 	{
 		$upload = wp_upload_dir();
-		$basePath = apply_filters('iamntz/loggerwp/log-path', 'loggerwp');
 
-		return $upload['basedir'] . '/' . $basePath . '/' . $append;
+		return $upload['basedir'] . '/' . $this->getLogsFolderName() . '/' . $append;
+	}
+
+	/**
+	 * Gets log folder name
+	 *
+	 * @method getLogsFolderName
+	 *
+	 * @return string
+	 */
+	protected function getLogsFolderName()
+	{
+		return apply_filters('iamntz/loggerwp/log-path', 'loggerwp');
 	}
 
 	/**
@@ -205,22 +216,35 @@ $this->log->debug('Message', []);
 	/**
 	 * Generate user log file name
 	 *
-	 * @method getUserLogFileName
+	 * @method _getLogFilename
 	 *
 	 * @return string
 	 */
-	private function getUserLogFileName()
+	private function _getLogFilename()
 	{
 		$user = wp_get_current_user();
-		$userFile = $user->user_login . '-' . date('W-Y');
+		$userLogFileName = $user->user_login . '-' . date('W-Y');
 
 		if (defined('AUTH_SALT') && !empty(AUTH_SALT)) {
-			$userFile .= '___' . substr(sha1(AUTH_SALT), 1, 10);
+			$userLogFileName .= '___' . substr(sha1(AUTH_SALT), 1, 10);
 		}
 
-		$userFile = apply_filters('iamntz/loggerwp/log-file', "${userFile}.log", $user);
+		return $this->getLogFilename($userLogFileName, $user);
+	}
 
-		return $userFile;
+	/**
+	 * Apply filter to user filename
+	 *
+	 * @method getLogFilename
+	 *
+	 * @param  string         $userLogFileName
+	 * @param  \WP_User       $user
+	 *
+	 * @return sting
+	 */
+	protected function getLogFilename($userLogFileName, $user)
+	{
+		return apply_filters('iamntz/loggerwp/log-file', "${userLogFileName}.log", $user);
 	}
 
 	/**
@@ -235,7 +259,7 @@ $this->log->debug('Message', []);
 		}
 
 		$this->maybeCreateFile('index.php');
-		$this->maybeCreateFile($this->getUserLogFileName());
+		$this->maybeCreateFile($this->_getLogFilename());
 	}
 
 	/**
