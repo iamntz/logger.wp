@@ -164,8 +164,31 @@ $this->log->debug('Message', []);
 
 		$details = array_filter($details);
 		$message = trim($message);
+		$details = $this->parseErrorsBeforeWriting($details);
 
 		call_user_func_array([$logger, $errorLevel], [$message, $details]);
+	}
+
+	/**
+	 * Parse messages before writting to remove unwanted things
+	 *
+	 * @method parseErrorsBeforeWriting
+	 *
+	 * @param  mixed                   $errors
+	 *
+	 * @return mixed
+	 */
+	protected function parseErrorsBeforeWriting($errors)
+	{
+		if (!is_array($errors)) {
+			return htmlentities($errors);
+		}
+
+		$data = [];
+		foreach ($errors as $key => $value) {
+			$data[$key] = $this->parseErrorsBeforeWriting($value);
+		}
+		return $data;
 	}
 
 	/**
