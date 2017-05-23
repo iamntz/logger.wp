@@ -45,8 +45,8 @@ You can also read logs:
 ```
 $logs = new LoggerWP;
 
-$logs->getErrors(50, 'warning'); // gets last 50 warnings
-$logs->getErrors(5, 'debug'); // gets last 50 debug messages
+$logs->getLogs(50, 'warning'); // gets last 50 warnings
+$logs->getLogs(5, 'debug'); // gets last 50 debug messages
 ```
 
 

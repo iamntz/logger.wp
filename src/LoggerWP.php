@@ -53,14 +53,14 @@ $this->log->debug('Message', []);
 	/**
 	 * Gets last `$limit` errors
 	 *
-	 * @method getErrors
+	 * @method getLogs
 	 *
 	 * @param  integer   $limit
 	 * @param  string    $level what level of errors should return
 	 *
 	 * @return string
 	 */
-	public function getErrors($limit = 10, $level = null)
+	public function getLogs($limit = 10, $level = null)
 	{
 		$this->maybeCreateDirStucture();
 		$lines = file($this->getPath($this->_getLogFilename()));
@@ -101,6 +101,18 @@ $this->log->debug('Message', []);
 		$limitedResults = implode("\n", $this->array_flatten($limitedResults));
 
 		return preg_replace("~\n\n~", "\n", $limitedResults);
+	}
+
+	/**
+	 * Deletes the user log file
+	 *
+	 * @method deleteLogFile
+	 */
+	public function deleteLogFile()
+	{
+		if (file_exists($this->getPath($this->_getLogFilename()))) {
+			unlink($this->getPath($this->_getLogFilename()));
+		}
 	}
 
 	/**
@@ -185,35 +197,6 @@ $this->log->debug('Message', []);
 	}
 
 	/**
-	 * Validate error levels
-	 *
-	 * @method getValidErrorLevel
-	 *
-	 * @param  string             $level
-	 *
-	 * @return string|boolean
-	 */
-	private function getValidErrorLevel($level)
-	{
-		$errorLevels = [
-			LogLevel::EMERGENCY,
-			LogLevel::ALERT,
-			LogLevel::CRITICAL,
-			LogLevel::ERROR,
-			LogLevel::WARNING,
-			LogLevel::NOTICE,
-			LogLevel::INFO,
-			LogLevel::DEBUG,
-		];
-
-		if (!in_array($level, $errorLevels)) {
-			return;
-		}
-
-		return $level;
-	}
-
-	/**
 	 * Generate user log file name
 	 *
 	 * @method _getLogFilename
@@ -276,4 +259,34 @@ $this->log->debug('Message', []);
 			fclose($file);
 		}
 	}
+
+	/**
+	 * Validate error levels
+	 *
+	 * @method getValidErrorLevel
+	 *
+	 * @param  string             $level
+	 *
+	 * @return string|boolean
+	 */
+	private function getValidErrorLevel($level)
+	{
+		$errorLevels = [
+			LogLevel::EMERGENCY,
+			LogLevel::ALERT,
+			LogLevel::CRITICAL,
+			LogLevel::ERROR,
+			LogLevel::WARNING,
+			LogLevel::NOTICE,
+			LogLevel::INFO,
+			LogLevel::DEBUG,
+		];
+
+		if (!in_array($level, $errorLevels)) {
+			return;
+		}
+
+		return $level;
+	}
+
 }
