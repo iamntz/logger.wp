@@ -147,7 +147,7 @@ $this->log->debug('Message', []);
 	 * @param  array      $details    The error details
 	 * @param  string     $errorLevel
 	 */
-	private function writeError($message, $details = [], $errorLevel)
+	protected function writeError($message, $details = [], $errorLevel)
 	{
 		$this->maybeCreateDirStucture();
 		$fileName = $this->_getLogFilename();
